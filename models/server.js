@@ -4,8 +4,10 @@ const fileUpload = require('express-fileupload');
 /* const { createServer } = require('http'); */
 
 
+
 const { dbConnection } = require('../database/config');
 const { socketController } = require('../sockets/controller.socket');
+const morgan = require("morgan");
 
 class Server {
 
@@ -64,6 +66,9 @@ class Server {
             createParentPath: true
         }));
 
+        // Utilizando Morgan
+        this.app.use(morgan("dev"));
+
     }
 
     routes() {
@@ -79,7 +84,7 @@ class Server {
 
     sockets() {
 
-        this.io.on("connection", socketController );
+        this.io.on("connection", ( socket ) => socketController( socket, this.io ) );
 
     }
 
